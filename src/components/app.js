@@ -38,6 +38,7 @@ export default class App extends Component {
           options={this.optionsForSelect}
           onChange={this.handleSelectChange}
           value={this.state.selectedOption}
+          isMulti
         />
         {JSON.stringify(this.state)}
         <br />
@@ -63,12 +64,26 @@ export default class App extends Component {
   }
 
   get filteredArticles() {
-    const result = articles.filter((article) => this.filterDays(article.date))
+    let result = articles.filter((article) => this.filterDays(article.date))
+    result = result.filter((article) => this.filterSelectedTitle(article.title))
     return result
   }
   onDayClickHandler = (day) => {
     const range = DateUtils.addDayToRange(day, this.state.days)
     this.setState({ days: range })
+  }
+
+  filterSelectedTitle = (title) => {
+    if (
+      !Array.isArray(this.state.selectedOption) ||
+      this.state.selectedOption.length === 0
+    )
+      return true
+
+    for (var selectedOption of this.state.selectedOption) {
+      if (selectedOption.label === title) return true
+    }
+    return false
   }
 
   filterDays = (day) => {
