@@ -6,11 +6,6 @@ import Select from 'react-select'
 import DayPicker, { DateUtils } from 'react-day-picker'
 import 'react-day-picker/lib/style.css'
 
-const birthdayStyle = `.DayPicker-Day--highlighted {
-  background-color: orange;
-  color: white;
-}`
-
 export default class App extends Component {
   state = {
     selectedOption: null,
@@ -23,6 +18,19 @@ export default class App extends Component {
 
   render() {
     const { from, to } = this.state.days
+
+    const style = {
+      zoom: '0.2',
+      width: '40%',
+      height: '100%',
+      flexGrow: 0,
+      flexShrink: 0
+    }
+
+    const mstyle = {
+      display: 'flex',
+      flexDirection: 'row'
+    }
     return (
       <div>
         <UserForm />
@@ -33,18 +41,29 @@ export default class App extends Component {
         />
         {JSON.stringify(this.state)}
         <br />
-        <DayPicker
-          onDayClick={this.onDayClickHandler}
-          selectedDays={[{ from, to }]}
-        />
-        <ArticleList items={this.filteredArticles} />
+
+        <div style={mstyle}>
+          <div style={style}>
+            <DayPicker
+              onDayClick={this.onDayClickHandler}
+              selectedDays={[{ from, to }]}
+              month={new Date(2016, 0)}
+              numberOfMonths={12}
+              pagedNavigation
+              fixedWeeks
+            />
+          </div>
+          <ArticleList
+            items={this.filteredArticles}
+            selectedOption={this.state.selectedOption}
+          />
+        </div>
       </div>
     )
   }
 
   get filteredArticles() {
     const result = articles.filter((article) => this.filterDays(article.date))
-    console.log(result)
     return result
   }
   onDayClickHandler = (day) => {
@@ -53,9 +72,14 @@ export default class App extends Component {
   }
 
   filterDays = (day) => {
-    console.log(day)
     const { days: range = { from: undefined, to: undefined } } = this.state
-    console.log(range)
+
+    if (
+      range.to === range.from &&
+      (range.from === undefined || range.from === null)
+    ) {
+      return true
+    }
     return DateUtils.isDayInRange(new Date(day), range)
   }
 
