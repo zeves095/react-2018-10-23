@@ -23,20 +23,43 @@ export class ArticleList extends Component {
   }
 
   get items() {
-    return this.props.articles.map((item) => (
-      <li key={item.id} className={'test--article-list_item'}>
-        <Article
-          article={item}
-          isOpen={this.props.openItemId === item.id}
-          toggleOpen={this.props.toggleOpenItem}
-        />
-      </li>
-    ))
+    let startDate = new Date(this.props.filters.calendar.from)
+    let endDate = new Date(this.props.filters.calendar.to)
+
+    return this.props.articles
+      .filter((item) => {
+        let itemDate = new Date(item.date)
+
+        return (
+          itemDate.getTime() >= startDate.getTime() &&
+          itemDate.getTime() <= endDate.getTime()
+        )
+      })
+      .filter((item) => {
+        console.log(this.props.filters.select.selectedOption)
+        if (!this.props.filters.select) return true
+        if (!this.props.filters.select.selectedOption) return true
+        if (!Array.isArray(this.props.filters.select.selectedOption))
+          return item.id === this.props.filters.select.selectedOption
+        return this.props.filters.select.selectedOption.length
+          ? this.props.filters.select.selectedOption.includes(item.id)
+          : true
+      })
+      .map((item) => (
+        <li key={item.id} className={'test--article-list_item'}>
+          <Article
+            article={item}
+            isOpen={this.props.openItemId === item.id}
+            toggleOpen={this.props.toggleOpenItem}
+          />
+        </li>
+      ))
   }
 }
 
 const mapStateToProps = (store) => ({
-  articles: store.articles // from store
+  articles: store.articles,
+  filters: store.filters
 })
 
 export default connect(mapStateToProps)(accordion(ArticleList))
