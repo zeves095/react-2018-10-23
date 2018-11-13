@@ -2,9 +2,9 @@
 const fs = require('fs')
 const path = './node_modules/react-scripts/config/paths.js'
 const user = 'zeves095'
-const lesson = 'HT2'
+const lesson = 'HT3'
 const folder = `homework/${user}/${lesson}`
-const fromFolder = /homework\/zeves095\/HT3/g
+const fromFolder = /src/g
 
 // !fs.existsSync(folder) && fs.mkdirSync(folder, '0755', true);
 
