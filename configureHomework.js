@@ -2,7 +2,7 @@
 const fs = require('fs')
 const path = './node_modules/react-scripts/config/paths.js'
 const user = 'zeves095'
-const lesson = 'HT3'
+const lesson = 'HT4'
 const folder = `homework/${user}/${lesson}`
 const fromFolder = /src/g
 
